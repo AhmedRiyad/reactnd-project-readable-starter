@@ -1,15 +1,15 @@
 import React, {Component} from 'react';
-import './App.css';
-import {getAll} from './ReadableAPI';
+import '../App.css';
+import {fetchPosts} from '../ReadableAPI';
 import {Dropdown, Menu} from 'semantic-ui-react'
 import {
     BrowserRouter as Router,
     Route,
     Switch
 } from 'react-router-dom';
-import ListPosts from './components/ListPosts';
-import PostDetails from './components/PostDetails';
-import EditPost from './components/EditPost';
+import ListPosts from './ListPosts';
+import PostDetails from './PostDetails';
+import EditPost from './EditPost';
 
 
 class App extends Component {
@@ -72,7 +72,5 @@ class App extends Component {
         )
     }
 }
-
-getAll();
 
 export default App;
