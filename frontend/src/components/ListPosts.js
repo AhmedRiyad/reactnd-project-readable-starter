@@ -84,7 +84,7 @@ ListPosts.propTypes = {
 
 const mapStateToProps = ({posts, categories}) => {
     return {
-        posts: posts.items,
+        posts: Object.keys(posts.items).map((k) => posts.items[k]),
         hasError: posts.hasError,
         isLoading: posts.isLoading,
         categories: categories.items

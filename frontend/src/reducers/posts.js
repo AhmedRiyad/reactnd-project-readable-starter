@@ -1,5 +1,5 @@
 import {combineReducers} from 'redux';
-import {POSTS_FETCH_DATA_SUCCESS, POSTS_HAS_ERROR, POSTS_IS_LOADING} from '../actions/post';
+import {POST_UPDATE_SUCCESS, POSTS_FETCH_DATA_SUCCESS, POSTS_HAS_ERROR, POSTS_IS_LOADING} from '../actions/post';
 
 function isLoading(state = false, action) {
     switch (action.type) {
@@ -24,12 +24,20 @@ function hasError(state = false, action) {
 function items(state = [], action) {
     switch (action.type) {
         case POSTS_FETCH_DATA_SUCCESS:
-            return action.posts;
+            return action.posts.reduce(function (acc, cur) {
+                acc[cur.id] = cur;
+                return acc;
+            }, {});
+
+        case POST_UPDATE_SUCCESS: {
+            return {...state,[action.post.id]: action.post}
+        }
 
         default:
             return state;
     }
 }
+
 
 const postsReducer = combineReducers({
     isLoading,
