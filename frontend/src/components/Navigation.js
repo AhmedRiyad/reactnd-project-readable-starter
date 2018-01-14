@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {Link} from 'react-router-dom';
-import {Dropdown, Menu} from 'semantic-ui-react';
+import {Menu} from 'semantic-ui-react';
 
 
 const Navigation = () => {

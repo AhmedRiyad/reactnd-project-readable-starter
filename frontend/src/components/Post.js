@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Feed, Icon, Label} from 'semantic-ui-react'
 import {Link} from 'react-router-dom';
-import {fetchCategoryPosts, fetchPosts, updatePostVote} from '../actions/post';
+import {updatePostVote} from '../actions/post';
 import {connect} from 'react-redux';
 
 
@@ -35,7 +35,9 @@ class Post extends React.Component {
                 </Feed.Label>
                 <Feed.Content>
                     <Feed.Summary>
-                        <a>{post.title}</a>
+                        <Link to={`/${post.category}/${post.id}`}>
+                            {post.title}
+                        </Link>
                         <br/>
                         <Feed.Date>
                             submitted on {(new Date(post.timestamp)).toLocaleString()} by <a>{post.author}</a>
@@ -73,7 +75,7 @@ Post.propTypes = {
     post: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = ({posts, categories}) => {
+const mapStateToProps = () => {
     return {};
 };
 

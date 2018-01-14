@@ -1,5 +1,5 @@
 import React from 'react';
-import {Form, Button, Input, Feed, Icon, Label, Header} from 'semantic-ui-react'
+import {Form, Button, Input, Header} from 'semantic-ui-react'
 import {Field, reduxForm} from 'redux-form';
 import PropTypes from 'prop-types';
 import {compose} from 'redux';

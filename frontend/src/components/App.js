@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
 import '../App.css';
-import {fetchPosts} from '../ReadableAPI';
-import {Container, Dropdown, Menu} from 'semantic-ui-react'
+import {Container} from 'semantic-ui-react'
 import {
-    BrowserRouter as Router,
-    Link,
     withRouter,
     Route,
     Switch
@@ -17,7 +14,6 @@ import {connect} from 'react-redux';
 
 
 class App extends Component {
-    state = {};
 
     componentDidMount() {
         this.props.fetchCategories();
@@ -47,8 +43,8 @@ class App extends Component {
                         )}
                         />
                         <Route
-                            exact path="/:category/:postId" render={() => (
-                            <PostDetails/>
+                            exact path="/:category/:postId" render={(props) => (
+                            <PostDetails postId={props.match.params.postId}/>
                         )}
                         />
                         {/*<Route*/}
@@ -76,7 +72,7 @@ const mapStateToProps = ({categories}) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchCategories: (url) => dispatch(fetchCategories())
+        fetchCategories: () => dispatch(fetchCategories())
     };
 };
 
