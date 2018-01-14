@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Feed, Icon, Label} from 'semantic-ui-react'
+import {Link} from 'react-router-dom';
 
 
 const Post = ({post}) => {
@@ -40,7 +41,10 @@ const Post = ({post}) => {
                 </Feed.Meta>
                 <br/>
                 <Feed.Meta>
-                    <Label color='blue' as='a'>{post.category}</Label>
+                    <Label color='blue'
+                           as={Link}
+                           to={`/${post.category}`}
+                            >{post.category}</Label>
                 </Feed.Meta>
             </Feed.Content>
         </Feed.Event>

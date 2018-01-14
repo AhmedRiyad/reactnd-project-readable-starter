@@ -26,6 +26,24 @@ export function postsHasError(hasError) {
     };
 }
 
+export function fetchCategoryPosts(category) {
+    return (dispatch) => {
+        dispatch(postsIsLoading(true));
+        fetch(`${api}/${category}/posts`, {headers})
+            .then((response) => {
+                if (!response.ok) {
+                    throw Error(response.statusText);
+                }
+
+                dispatch(postsIsLoading(false));
+
+                return response.json();
+            })
+            .then((posts) => dispatch(postsFetchDataSuccess(posts)))
+            .catch(() => dispatch(postsHasError(true)));
+    };
+}
+
 export function fetchPosts() {
     return (dispatch) => {
         dispatch(postsIsLoading(true));

@@ -1,59 +1,49 @@
 import React, {Component} from 'react';
 import '../App.css';
 import {fetchPosts} from '../ReadableAPI';
-import {Dropdown, Menu} from 'semantic-ui-react'
+import {Container, Dropdown, Menu} from 'semantic-ui-react'
 import {
     BrowserRouter as Router,
+    Link,
+    withRouter,
     Route,
     Switch
 } from 'react-router-dom';
 import ListPosts from './ListPosts';
 import PostDetails from './PostDetails';
-import EditPost from './EditPost';
+import Navigation from './Navigation';
+import {fetchCategories} from '../actions/category';
+import {connect} from 'react-redux';
 
 
 class App extends Component {
     state = {};
 
-    handleItemClick = (e, {name}) => this.setState({activeItem: name})
+    componentDidMount() {
+        this.props.fetchCategories();
+    }
 
     render() {
-        const {activeItem} = this.state;
 
         return (
 
             <div>
-                <Menu stackable>
-                    <Menu.Item>
-                        Readable
-                    </Menu.Item>
 
-                    <Menu.Item
-                        name='Home'
-                        active={activeItem === 'home'}
-                        onClick={this.handleItemClick}
-                    >
-                        Home
-                    </Menu.Item>
+                {/*<Route path="/(.+)" render={(() =>*/}
+                {/*<Navigation/>*/}
+                {/*)}/>*/}
+                <Navigation/>
 
-                    <Dropdown text='Categories' pointing className='link item'>
-                        <Dropdown.Menu>
-                            <Dropdown.Item>All</Dropdown.Item>
-                            <Dropdown.Item>React</Dropdown.Item>
-                            <Dropdown.Item>Test</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </Menu>
-                <Router>
+                <Container text>
                     <Switch>
+                        {/*<Route*/}
+                        {/*exact path="/posts/new" render={() => (*/}
+                        {/*<EditPost/>*/}
+                        {/*)}*/}
+                        {/*/>*/}
                         <Route
-                            exact path="/posts/new" render={() => (
-                            <EditPost/>
-                        )}
-                        />
-                        <Route
-                            exact path="/:category?" render={() => (
-                            <ListPosts/>
+                            exact path="/:category?" render={(props) => (
+                            <ListPosts category={props.match.params.category}/>
                         )}
                         />
                         <Route
@@ -61,16 +51,34 @@ class App extends Component {
                             <PostDetails/>
                         )}
                         />
-                        <Route
-                            exact path="/:category/:postId/edit" render={() => (
-                            <EditPost/>
-                        )}
-                        />
+                        {/*<Route*/}
+                        {/*exact path="/:category/:postId/edit" render={() => (*/}
+                        {/*<EditPost/>*/}
+                        {/*)}*/}
+                        {/*/>*/}
                     </Switch>
-                </Router>
+                </Container>
+
+
             </div>
         )
     }
 }
 
-export default App;
+
+const mapStateToProps = ({categories}) => {
+    return {
+        categories: categories.items,
+        hasError: categories.hasError,
+        isLoading: categories.isLoading
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchCategories: (url) => dispatch(fetchCategories())
+    };
+};
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
