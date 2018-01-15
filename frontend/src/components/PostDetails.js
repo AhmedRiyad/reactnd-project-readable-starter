@@ -5,11 +5,12 @@ import userImage from './../assets/images/no_image_user.png';
 import {fetchPost} from '../actions/post';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {addComment, fetchPostComments, updateCommentVote} from '../actions/comments';
+import {addComment, fetchPostComments, updateComment, updateCommentVote} from '../actions/comments';
 import EditComment from './EditComment';
 
 
 class PostDetails extends React.Component {
+    state = {};
 
     componentDidMount() {
         this.props.fetchPost(this.props.postId);
@@ -24,9 +25,26 @@ class PostDetails extends React.Component {
         this.props.updateCommentVote(id, 'downVote');
     }
 
+    editComment = (comment) => {
+        this.setState({
+            commentToEdit: comment
+        });
+        this.openCommentsModal();
+    };
+
     handleCommentSubmit = (comment) => {
-        console.log(comment);
-        this.props.addComment(comment);
+        if (this.state.commentToEdit) {
+            this.props.updateComment(comment);
+        } else {
+            this.props.addComment(comment);
+        }
+        this.setState({commentToEdit: null});
+    };
+
+    handleCancel = () => this.setState({commentToEdit: null});
+
+    handleOnMount = (openCommentsModal) => {
+        this.openCommentsModal = openCommentsModal;
     };
 
 
@@ -60,7 +78,9 @@ class PostDetails extends React.Component {
                                                   style={{marginLeft: '3px'}}
                                                   link
                                                   onClick={() => this.voteDown(comment.id)}/>
-                                            <a>Edit</a>
+                                            <a onClick={() => this.editComment(comment)}>
+                                                Edit
+                                            </a>
                                             <a style={{marginLeft: '5px'}}
                                                color='red'>
                                                 Delete
@@ -73,10 +93,18 @@ class PostDetails extends React.Component {
                             <Divider section/>
 
                             {this.props.comments && (
-                                <EditComment
-                                    postId={this.props.post.id}
-                                    onSubmit={this.handleCommentSubmit}/>
+                                <Button onClick={this.openCommentsModal}
+                                        content='Add Comment'
+                                        labelPosition='left'
+                                        icon='edit'
+                                        primary/>
                             )}
+                            <EditComment
+                                onMount={this.handleOnMount}
+                                comment={this.state.commentToEdit}
+                                postId={this.props.post.id}
+                                onCancel={this.handleCancel}
+                                onSubmit={this.handleCommentSubmit}/>
                         </Comment.Group>
                     </div>
                 )}
@@ -103,7 +131,8 @@ const mapDispatchToProps = (dispatch) => {
         fetchPost: (id) => dispatch(fetchPost(id)),
         fetchPostComments: (id) => dispatch(fetchPostComments(id)),
         updateCommentVote: (id, option) => dispatch(updateCommentVote(id, option)),
-        addComment: (comment) => dispatch(addComment(comment))
+        addComment: (comment) => dispatch(addComment(comment)),
+        updateComment: (comment) => dispatch(updateComment(comment))
     };
 };
 

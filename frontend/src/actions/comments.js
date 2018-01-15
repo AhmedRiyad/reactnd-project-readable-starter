@@ -61,6 +61,24 @@ export function addComment(comment) {
     };
 }
 
+export function updateComment(comment) {
+    return (dispatch) => {
+        fetch(`${api}/comments/${comment.id}`, {
+            method: 'PUT',
+            body: JSON.stringify({...comment}),
+            headers
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw Error(response.statusText);
+                }
+
+                return response.json();
+            })
+            .then((comment) => dispatch(commentUpdateSuccess(comment)))
+    };
+}
+
 export function updateCommentVote(commentId, option) {
     return (dispatch) => {
         fetch(`${api}/comments/${commentId}`, {

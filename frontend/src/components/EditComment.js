@@ -11,7 +11,15 @@ export const required = value => (value ? undefined : 'Required');
 class EditComment extends React.Component {
     state = {};
 
-    handleOpen = () => this.setState({modalOpen: true});
+    componentDidMount() {
+        if (this.props.onMount) {
+            this.props.onMount(this.handleOpen);
+        }
+    }
+
+    handleOpen = () => {
+        this.setState({modalOpen: true});
+    };
 
     handleSubmit = (e) => {
         this.props.handleSubmit(e);
@@ -20,21 +28,16 @@ class EditComment extends React.Component {
 
     handleClose = () => {
         this.props.reset();
+        this.props.onCancel();
         this.setState({modalOpen: false});
     };
 
     render() {
         return (
-            <Modal
-                trigger={<Button onClick={this.handleOpen}
-                                 content='Add Reply'
-                                 labelPosition='left'
-                                 icon='edit'
-                                 primary/>}
-                open={this.state.modalOpen}>
+            <Modal open={this.state.modalOpen}>
                 <Modal.Content>
                     <div>
-                        <Header>Comment</Header>
+                        <Header>{this.props.edit ? 'Edit Comment' : 'Add Comment'}</Header>
                         <Form reply
                               onSubmit={this.handleSubmit}
                               name="comment">
@@ -57,7 +60,7 @@ class EditComment extends React.Component {
                                    validate={required}/>
 
                             <Button type='submit'
-                                    content='Add Reply'
+                                    content={this.props.edit ? 'Update' : 'Add Comment'}
                                     labelPosition='left'
                                     icon='edit'
                                     primary/>
@@ -77,14 +80,19 @@ class EditComment extends React.Component {
 
 EditComment.propTypes = {
     onSubmit: PropTypes.func,
-    postId: PropTypes.string
+    onCancel: PropTypes.func,
+    onMount: PropTypes.func,
+    postId: PropTypes.string,
+    comment: PropTypes.object
 };
 
-function mapStateToProps(state, {postId}) {
+function mapStateToProps(state, {postId, comment}) {
     return {
         initialValues: {
-            parentId: postId
-        }
+            parentId: postId,
+            ...comment
+        },
+        edit: !!comment
     }
 }
 
