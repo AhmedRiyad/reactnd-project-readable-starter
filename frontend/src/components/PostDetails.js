@@ -1,12 +1,13 @@
 import React from 'react';
-import {Header, Feed, Comment, Form, Icon, Button, Divider, Modal} from 'semantic-ui-react'
+import {Header, Feed, Comment, Icon, Button, Divider} from 'semantic-ui-react'
 import Post from './Post';
 import userImage from './../assets/images/no_image_user.png';
 import {fetchPost} from '../actions/post';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {addComment, fetchPostComments, updateComment, updateCommentVote} from '../actions/comments';
+import {addComment, deleteComment, fetchPostComments, updateComment, updateCommentVote} from '../actions/comments';
 import EditComment from './EditComment';
+import DeleteModal from './DeleteModal';
 
 
 class PostDetails extends React.Component {
@@ -42,6 +43,10 @@ class PostDetails extends React.Component {
     };
 
     handleCancel = () => this.setState({commentToEdit: null});
+
+    handleDelete = (comment) => {
+        this.props.deleteComment(comment.id);
+    };
 
     handleOnMount = (openCommentsModal) => {
         this.openCommentsModal = openCommentsModal;
@@ -81,10 +86,15 @@ class PostDetails extends React.Component {
                                             <a onClick={() => this.editComment(comment)}>
                                                 Edit
                                             </a>
-                                            <a style={{marginLeft: '5px'}}
-                                               color='red'>
-                                                Delete
-                                            </a>
+
+                                            <DeleteModal
+                                                onDelete={this.handleDelete}
+                                                item={comment}
+                                                component={
+                                                    (<a style={{marginLeft: '5px'}}
+                                                        color='red'>
+                                                        Delete
+                                                    </a>)}/>
                                         </Comment.Actions>
                                     </Comment.Content>
                                 </Comment>
@@ -132,7 +142,8 @@ const mapDispatchToProps = (dispatch) => {
         fetchPostComments: (id) => dispatch(fetchPostComments(id)),
         updateCommentVote: (id, option) => dispatch(updateCommentVote(id, option)),
         addComment: (comment) => dispatch(addComment(comment)),
-        updateComment: (comment) => dispatch(updateComment(comment))
+        updateComment: (comment) => dispatch(updateComment(comment)),
+        deleteComment: (comment) => dispatch(deleteComment(comment))
     };
 };
 

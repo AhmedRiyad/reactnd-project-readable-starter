@@ -7,6 +7,7 @@ export const COMMENTS_FETCH_DATA_SUCCESS = 'COMMENTS_FETCH_DATA_SUCCESS';
 export const COMMENTS_HAS_ERROR = 'COMMENTS_HAS_ERROR';
 export const COMMENT_UPDATE_SUCCESS = 'COMMENT_UPDATE_SUCCESS';
 export const COMMENT_ADD_SUCCESS = 'COMMENT_ADD_SUCCESS';
+export const COMMENT_DELETE_SUCCESS = 'COMMENT_DELETE_SUCCESS';
 
 export function commentsIsLoading(isLoading) {
     return {
@@ -39,6 +40,13 @@ export function commentUpdateSuccess(comment) {
 export function commentAddSuccess(comment) {
     return {
         type: COMMENT_ADD_SUCCESS,
+        comment
+    };
+}
+
+export function commentDeleteSuccess(comment) {
+    return {
+        type: COMMENT_DELETE_SUCCESS,
         comment
     };
 }
@@ -76,6 +84,23 @@ export function updateComment(comment) {
                 return response.json();
             })
             .then((comment) => dispatch(commentUpdateSuccess(comment)))
+    };
+}
+
+export function deleteComment(id) {
+    return (dispatch) => {
+        fetch(`${api}/comments/${id}`, {
+            method: 'DELETE',
+            headers
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw Error(response.statusText);
+                }
+
+                return response.json();
+            })
+            .then((comment) => dispatch(commentDeleteSuccess(comment)))
     };
 }
 

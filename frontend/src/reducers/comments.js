@@ -4,7 +4,8 @@ import {
     COMMENTS_FETCH_DATA_SUCCESS,
     COMMENTS_HAS_ERROR,
     COMMENTS_IS_LOADING,
-    COMMENT_ADD_SUCCESS
+    COMMENT_ADD_SUCCESS,
+    COMMENT_DELETE_SUCCESS
 } from '../actions/comments';
 
 function isLoading(state = false, action) {
@@ -38,6 +39,11 @@ function items(state = [], action) {
         case COMMENT_UPDATE_SUCCESS:
         case COMMENT_ADD_SUCCESS: {
             return {...state, [action.comment.id]: action.comment}
+        }
+        case COMMENT_DELETE_SUCCESS: {
+            let newState = {...state};
+            delete newState[action.comment.id];
+            return newState;
         }
 
         default:
