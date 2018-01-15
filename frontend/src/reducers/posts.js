@@ -1,6 +1,5 @@
 import {combineReducers} from 'redux';
 import {
-    POST_FETCH_DATA_SUCCESS,
     POST_HAS_ERROR,
     POST_IS_LOADING,
     POST_UPDATE_SUCCESS,
@@ -56,10 +55,6 @@ function items(state = [], action) {
                 acc[cur.id] = cur;
                 return acc;
             }, {});
-
-        case POST_FETCH_DATA_SUCCESS: {
-            return {...state, [action.post.id]: action.post}
-        }
 
         case POST_UPDATE_SUCCESS: {
             return {...state, [action.post.id]: action.post}

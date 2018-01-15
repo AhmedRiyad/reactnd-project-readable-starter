@@ -5,7 +5,6 @@ export const POSTS_IS_LOADING = 'POSTS_IS_LOADING';
 export const POSTS_FETCH_DATA_SUCCESS = 'POSTS_FETCH_DATA_SUCCESS';
 export const POSTS_HAS_ERROR = 'POSTS_HAS_ERROR';
 export const POST_IS_LOADING = 'POST_IS_LOADING';
-export const POST_FETCH_DATA_SUCCESS = 'POST_FETCH_DATA_SUCCESS';
 export const POST_HAS_ERROR = 'POST_HAS_ERROR';
 export const POST_UPDATE_SUCCESS = 'POST_UPDATE_SUCCESS';
 
@@ -39,7 +38,7 @@ export function postIsLoading(isLoading) {
 
 export function postFetchDataSuccess(post) {
     return {
-        type: POST_FETCH_DATA_SUCCESS,
+        type: POST_UPDATE_SUCCESS,
         post
     };
 }
@@ -114,7 +113,6 @@ export function fetchPosts() {
 
 export function updatePostVote(postId, option) {
     return (dispatch) => {
-        dispatch(postsIsLoading(true));
         fetch(`${api}/posts/${postId}`, {
             method: 'POST',
             body: JSON.stringify({
@@ -126,8 +124,6 @@ export function updatePostVote(postId, option) {
                 if (!response.ok) {
                     throw Error(response.statusText);
                 }
-
-                dispatch(postsIsLoading(false));
 
                 return response.json();
             })

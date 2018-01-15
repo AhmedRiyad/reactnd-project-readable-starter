@@ -1,32 +1,10 @@
 import React from 'react';
-import {Form, Button, Input, Header} from 'semantic-ui-react'
+import {Form, Button, Header} from 'semantic-ui-react'
 import {Field, reduxForm} from 'redux-form';
 import PropTypes from 'prop-types';
 import {compose} from 'redux';
+import {SemanticFormField} from './SemanticFormField';
 
-
-export function semanticFormField({input, type, label, placeholder, meta: {touched, error, warning}, as: As = Input, ...props}) {
-    function handleChange(e, {value}) {
-        return input.onChange(value);
-    }
-
-    return (
-        <Form.Field>
-            <As {...props} {...input} value={input.value} type={type} label={label} placeholder={placeholder}
-                onChange={handleChange}/>
-            {touched && ((error && <span><i>{error}</i></span>) || (warning && <span><i>{warning}</i></span>))}
-        </Form.Field>
-    );
-}
-
-semanticFormField.propTypes = {
-    as: PropTypes.any,
-    input: PropTypes.object,
-    type: PropTypes.string,
-    label: PropTypes.string,
-    placeholder: PropTypes.string,
-    meta: PropTypes.object
-};
 
 export const required = value => (value ? undefined : 'Required');
 
@@ -37,7 +15,7 @@ const EditPost = (props) => {
             <Header>Select a Photo</Header>
             <Form name="product">
                 <Field name="title"
-                       component={semanticFormField}
+                       component={SemanticFormField}
                        as={Form.Input}
                        type="text"
                        label="Title"
@@ -46,7 +24,7 @@ const EditPost = (props) => {
                        required
                        validate={required}/>
                 <Field name="content"
-                       component={semanticFormField}
+                       component={SemanticFormField}
                        as={Form.Input}
                        type="text"
                        label="Content"
@@ -56,7 +34,7 @@ const EditPost = (props) => {
                        validate={required}/>
 
                 <Field name="author"
-                       component={semanticFormField}
+                       component={SemanticFormField}
                        as={Form.Input}
                        type="text"
                        label="Author"
@@ -65,7 +43,7 @@ const EditPost = (props) => {
                        required
                        validate={required}/>
                 <Field name="category"
-                       component={semanticFormField}
+                       component={SemanticFormField}
                        as={Form.Select}
                        options={[
                            {key: '0', text: 'Option 1', value: '0'},

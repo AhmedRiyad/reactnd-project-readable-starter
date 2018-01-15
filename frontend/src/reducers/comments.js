@@ -1,5 +1,11 @@
 import {combineReducers} from 'redux';
-import {COMMENTS_FETCH_DATA_SUCCESS, COMMENTS_HAS_ERROR, COMMENTS_IS_LOADING} from '../actions/comments';
+import {
+    COMMENT_UPDATE_SUCCESS,
+    COMMENTS_FETCH_DATA_SUCCESS,
+    COMMENTS_HAS_ERROR,
+    COMMENTS_IS_LOADING,
+    COMMENT_ADD_SUCCESS
+} from '../actions/comments';
 
 function isLoading(state = false, action) {
     switch (action.type) {
@@ -17,14 +23,22 @@ function hasError(state = false, action) {
             return action.hasError;
 
         default:
-            return state;
+            return state
     }
 }
 
 function items(state = [], action) {
     switch (action.type) {
         case COMMENTS_FETCH_DATA_SUCCESS:
-            return action.comments;
+            return action.comments.reduce(function (acc, cur) {
+                acc[cur.id] = cur;
+                return acc;
+            }, {});
+
+        case COMMENT_UPDATE_SUCCESS:
+        case COMMENT_ADD_SUCCESS: {
+            return {...state, [action.comment.id]: action.comment}
+        }
 
         default:
             return state;

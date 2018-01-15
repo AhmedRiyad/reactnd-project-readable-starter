@@ -1,12 +1,12 @@
 import React from 'react';
-import {Header, Feed, Comment, Form, Icon, Button} from 'semantic-ui-react'
+import {Header, Feed, Comment, Form, Icon, Button, Divider, Modal} from 'semantic-ui-react'
 import Post from './Post';
 import userImage from './../assets/images/no_image_user.png';
-import {fetchCategoryPosts, fetchPost, fetchPosts, updatePostVote} from '../actions/post';
+import {fetchPost} from '../actions/post';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {fetchPostComments} from '../actions/comments';
-import {Link} from 'react-router-dom'; // Tell Webpack this JS file uses this image
+import {addComment, fetchPostComments, updateCommentVote} from '../actions/comments';
+import EditComment from './EditComment';
 
 
 class PostDetails extends React.Component {
@@ -15,6 +15,20 @@ class PostDetails extends React.Component {
         this.props.fetchPost(this.props.postId);
         this.props.fetchPostComments(this.props.postId);
     }
+
+    voteUp(id) {
+        this.props.updateCommentVote(id, 'upVote');
+    }
+
+    voteDown(id) {
+        this.props.updateCommentVote(id, 'downVote');
+    }
+
+    handleCommentSubmit = (comment) => {
+        console.log(comment);
+        this.props.addComment(comment);
+    };
+
 
     render() {
         return (
@@ -36,14 +50,16 @@ class PostDetails extends React.Component {
                                         <Comment.Metadata>
                                             <div>{(new Date(comment.timestamp)).toLocaleString()}</div>
                                         </Comment.Metadata>
-                                        <Comment.Text>How artistic!</Comment.Text>
+                                        <Comment.Text>{comment.body}</Comment.Text>
                                         <Comment.Actions>
                                             <Icon name='triangle up'
-                                                  link/>
+                                                  link
+                                                  onClick={() => this.voteUp(comment.id)}/>
                                             {comment.voteScore}
                                             <Icon name='triangle down'
                                                   style={{marginLeft: '3px'}}
-                                                  link/>
+                                                  link
+                                                  onClick={() => this.voteDown(comment.id)}/>
                                             <a>Edit</a>
                                             <a style={{marginLeft: '5px'}}
                                                color='red'>
@@ -54,12 +70,13 @@ class PostDetails extends React.Component {
                                 </Comment>
                             ))}
 
+                            <Divider section/>
 
                             {this.props.comments && (
-                                <Form reply>
-                                    <Form.TextArea/>
-                                    <Button content='Add Reply' labelPosition='left' icon='edit' primary/>
-                                </Form>)}
+                                <EditComment
+                                    postId={this.props.post.id}
+                                    onSubmit={this.handleCommentSubmit}/>
+                            )}
                         </Comment.Group>
                     </div>
                 )}
@@ -77,14 +94,16 @@ PostDetails.propTypes = {
 const mapStateToProps = ({posts, comments}, props) => {
     return {
         post: posts.items[props.postId],
-        comments: comments.items
+        comments: Object.keys(comments.items).map((k) => comments.items[k])
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchPost: (id) => dispatch(fetchPost(id)),
-        fetchPostComments: (id) => dispatch(fetchPostComments(id))
+        fetchPostComments: (id) => dispatch(fetchPostComments(id)),
+        updateCommentVote: (id, option) => dispatch(updateCommentVote(id, option)),
+        addComment: (comment) => dispatch(addComment(comment))
     };
 };
 
