@@ -78,7 +78,7 @@ class EditPostModal extends Component {
                                    validate={required}/>
 
                             <Button type='submit' color='blue'>
-                                {this.props.edit ? 'Update' : 'Add Post'}
+                                {post ? 'Update' : 'Add Post'}
                             </Button>
                             <Button type='button'
                                     onClick={() => this.handleClose()}>

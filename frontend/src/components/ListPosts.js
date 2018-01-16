@@ -9,6 +9,9 @@ import EditPostModal from './EditPostModal';
 
 
 class ListPosts extends React.Component {
+    static contextTypes = {
+        router: PropTypes.object
+    };
 
     componentDidMount() {
         this.props.fetchPosts(this.props.category);
@@ -21,6 +24,7 @@ class ListPosts extends React.Component {
     }
 
     handleSubmit = (post) => {
+        this.context.router.history.push("/");
         this.props.addPost(post);
     };
 
