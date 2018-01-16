@@ -13,7 +13,7 @@ class EditPostModal extends Component {
     state = {modalOpen: false};
 
     handleOpen = () => {
-        this.props.dispatch(initialize('post', {...this.props.postObj}));
+        this.props.dispatch(initialize('post', {...this.props.post}));
         this.setState({modalOpen: true});
     };
 
@@ -99,12 +99,10 @@ EditPostModal.propTypes = {
 };
 
 
-function mapStateToProps({categories}, {post}) {
+function mapStateToProps({categories}) {
 
     return {
         initialValues: {},
-        postObj: post,
-        edit: !!post,
         categories: categories.items
     }
 }
