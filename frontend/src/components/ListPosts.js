@@ -6,6 +6,8 @@ import {connect} from 'react-redux';
 import {addPost, fetchCategoryPosts, fetchPosts} from '../actions/post';
 import PropTypes from 'prop-types';
 import EditPostModal from './EditPostModal';
+import sortBy from 'lodash/sortBy';
+import {changeSortingKey} from '../actions/user-state';
 
 
 class ListPosts extends React.Component {
@@ -28,8 +30,21 @@ class ListPosts extends React.Component {
         this.props.addPost(post);
     };
 
+    handleSortItemClick(key) {
+        this.props.sortPostBy(key);
+    }
+
 
     render() {
+        const sortingItems = [
+            {key: 'timestamp', name: 'Date'},
+            {key: 'title', name: 'Title'},
+            {key: 'category', name: 'Category'},
+            {key: 'voteScore', name: 'Votes'},
+        ];
+
+        const sortingItem = sortingItems.filter((item) => item.key === this.props.sortPostsBy)[0];
+
         return (
             <div>
                 <Menu stackable borderless>
@@ -40,9 +55,27 @@ class ListPosts extends React.Component {
                             Posts
                         </Menu.Item>
 
+
                         <Menu.Menu position='right'>
+                            <Menu.Item>
+                                Sort By
+                            </Menu.Item>
                             <Dropdown
-                                text='Categories'
+                                text={(sortingItem && sortingItem.name) || 'Choose'}
+                                pointing
+                                className='link item'>
+                                <Dropdown.Menu>
+                                    {sortingItems.map((sortingItem) => (
+                                        <Dropdown.Item key={sortingItem.key}
+                                                       onClick={() => this.handleSortItemClick(sortingItem.key)}>
+                                            {sortingItem.name}
+                                        </Dropdown.Item>
+                                    ))}
+
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <Dropdown
+                                text={this.props.category || 'All Categories'}
                                 pointing
                                 className='link item'>
                                 <Dropdown.Menu>
@@ -50,7 +83,7 @@ class ListPosts extends React.Component {
                                         as={Link}
                                         to='/'
                                     >
-                                        All
+                                        All Categories
                                     </Dropdown.Item>
                                     {this.props.categories.map((category) => (
                                         <Dropdown.Item
@@ -75,10 +108,17 @@ class ListPosts extends React.Component {
                 </Menu>
 
                 <Feed>
-                    {this.props.posts.map((post) => (
-                        <Post key={post.id}
-                              post={post}/>
-                    ))}
+                    {sortBy(this.props.posts
+                        .filter((post) => {
+                            if (this.props.category) {
+                                return this.props.category === post.category;
+                            }
+                            return true;
+                        }), this.props.sortPostsBy)
+                        .map((post) => (
+                            <Post key={post.id}
+                                  post={post}/>
+                        ))}
                 </Feed>
             </div>
         )
@@ -89,19 +129,21 @@ ListPosts.propTypes = {
     category: PropTypes.any
 };
 
-const mapStateToProps = ({posts, categories}) => {
+const mapStateToProps = ({posts, categories, userState}) => {
     return {
         posts: Object.keys(posts.items).map((k) => posts.items[k]),
         hasError: posts.hasError,
         isLoading: posts.isLoading,
-        categories: categories.items
+        categories: categories.items,
+        sortPostsBy: userState.postsSortingKey
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         fetchPosts: (category) => category ? dispatch(fetchCategoryPosts(category)) : dispatch(fetchPosts()),
-        addPost: (post) => dispatch(addPost(post))
+        addPost: (post) => dispatch(addPost(post)),
+        sortPostBy: (key) => dispatch(changeSortingKey(key))
     };
 };
 
