@@ -1,5 +1,7 @@
 import {combineReducers} from 'redux';
 import {
+    POST_ADD_SUCCESS,
+    POST_DELETE_SUCCESS,
     POST_HAS_ERROR,
     POST_IS_LOADING,
     POST_UPDATE_SUCCESS,
@@ -56,8 +58,15 @@ function items(state = [], action) {
                 return acc;
             }, {});
 
-        case POST_UPDATE_SUCCESS: {
+        case POST_UPDATE_SUCCESS:
+        case POST_ADD_SUCCESS: {
             return {...state, [action.post.id]: action.post}
+        }
+
+        case POST_DELETE_SUCCESS: {
+            let newState = {...state};
+            delete newState[action.post.id];
+            return newState;
         }
 
         default:

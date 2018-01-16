@@ -3,9 +3,9 @@ import {Button, Container, Dropdown, Feed, Menu, Modal} from 'semantic-ui-react'
 import {Link} from 'react-router-dom';
 import Post from './Post';
 import {connect} from 'react-redux';
-import {fetchCategoryPosts, fetchPosts} from '../actions/post';
-import EditPost from './EditPost';
+import {addPost, fetchCategoryPosts, fetchPosts} from '../actions/post';
 import PropTypes from 'prop-types';
+import EditPostModal from './EditPostModal';
 
 
 class ListPosts extends React.Component {
@@ -19,6 +19,14 @@ class ListPosts extends React.Component {
             this.props.fetchPosts(props.category);
         }
     }
+
+    postDeleted = (post) => {
+        console.log(post.category);
+    };
+
+    handleSubmit = (post) => {
+        this.props.addPost(post);
+    };
 
 
     render() {
@@ -57,11 +65,10 @@ class ListPosts extends React.Component {
                                 </Dropdown.Menu>
                             </Dropdown>
                             <Menu.Item>
-                                <Modal trigger={<Button>New Post</Button>}>
-                                    <Modal.Content>
-                                        <EditPost/>
-                                    </Modal.Content>
-                                </Modal>
+                                <EditPostModal
+                                    component={(<Button>New Post</Button>)}
+                                    onSubmit={this.handleSubmit}
+                                />
                             </Menu.Item>
                         </Menu.Menu>
                     </Container>
@@ -70,6 +77,7 @@ class ListPosts extends React.Component {
                 <Feed>
                     {this.props.posts.map((post) => (
                         <Post key={post.id}
+                              onPostDelete={this.postDeleted}
                               post={post}/>
                     ))}
                 </Feed>
@@ -93,7 +101,8 @@ const mapStateToProps = ({posts, categories}) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchPosts: (category) => category ? dispatch(fetchCategoryPosts(category)) : dispatch(fetchPosts())
+        fetchPosts: (category) => category ? dispatch(fetchCategoryPosts(category)) : dispatch(fetchPosts()),
+        addPost: (post) => dispatch(addPost(post))
     };
 };
 

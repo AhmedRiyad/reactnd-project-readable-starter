@@ -2,8 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Feed, Icon, Label} from 'semantic-ui-react'
 import {Link} from 'react-router-dom';
-import {updatePostVote} from '../actions/post';
+import {deletePost, updatePost, updatePostVote} from '../actions/post';
 import {connect} from 'react-redux';
+import DeleteModal from './DeleteModal';
+import EditPostModal from './EditPostModal';
 
 
 class Post extends React.Component {
@@ -15,6 +17,19 @@ class Post extends React.Component {
     voteDown() {
         this.props.updatePostVote(this.props.post.id, 'downVote');
     }
+
+    handleDelete = (post) => {
+        const {onPostDelete, deletePost} = this.props;
+
+        if (onPostDelete) {
+            onPostDelete(post);
+        }
+        deletePost(post.id);
+    };
+
+    handleEdit = (post) => {
+        this.props.updatePost(post);
+    };
 
     render() {
         const post = this.props.post;
@@ -48,8 +63,19 @@ class Post extends React.Component {
                     </Feed.Extra>
                     <Feed.Meta>
                         <Feed.Summary>
-                            <a>Edit</a>
-                            <a style={{marginLeft: '5px'}}>Delete</a>
+                            <EditPostModal
+                                component={(<a>Edit</a>)}
+                                post={post}
+                                onSubmit={this.handleEdit}
+                            />
+                            <DeleteModal
+                                onDelete={this.handleDelete}
+                                item={post}
+                                component={
+                                    (<a style={{marginLeft: '5px'}}
+                                        color='red'>
+                                        Delete
+                                    </a>)}/>
                         </Feed.Summary>
                     </Feed.Meta>
                     <br/>
@@ -73,6 +99,7 @@ class Post extends React.Component {
 
 Post.propTypes = {
     post: PropTypes.object.isRequired,
+    onPostDelete: PropTypes.func,
 };
 
 const mapStateToProps = () => {
@@ -81,7 +108,9 @@ const mapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        updatePostVote: (postId, option) => dispatch(updatePostVote(postId, option))
+        updatePostVote: (postId, option) => dispatch(updatePostVote(postId, option)),
+        deletePost: (post) => dispatch(deletePost(post)),
+        updatePost: (post) => dispatch(updatePost(post))
     };
 };
 

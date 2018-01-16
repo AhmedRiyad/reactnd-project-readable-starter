@@ -21,8 +21,8 @@ class EditComment extends React.Component {
         this.setState({modalOpen: true});
     };
 
-    handleSubmit = (e) => {
-        this.props.handleSubmit(e);
+    handleSubmit = () => {
+        this.props.handleSubmit();
         this.handleClose();
     };
 
