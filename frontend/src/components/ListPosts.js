@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Container, Dropdown, Feed, Menu, Modal} from 'semantic-ui-react'
+import {Button, Container, Dropdown, Feed, Menu} from 'semantic-ui-react'
 import {Link} from 'react-router-dom';
 import Post from './Post';
 import {connect} from 'react-redux';
