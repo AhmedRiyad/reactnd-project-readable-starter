@@ -29,11 +29,11 @@ export default class DeleteModal extends Component {
                     <p>Are you sure you want to delete this</p>
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button negative onClick={() => this.handleClose(false)}>No</Button>
                     <Button onClick={() => this.handleClose(true)}
                             positive>
                         Yes
                     </Button>
+                    <Button negative onClick={() => this.handleClose(false)}>No</Button>
                 </Modal.Actions>
             </Modal>
         )

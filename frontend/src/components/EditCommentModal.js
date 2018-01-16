@@ -1,5 +1,5 @@
 import React from 'react';
-import {Field, reduxForm} from 'redux-form';
+import {Field, initialize, reduxForm} from 'redux-form';
 import {Header, Form, Button, Modal} from 'semantic-ui-react'
 import PropTypes from 'prop-types';
 import {SemanticFormField} from './SemanticFormField';
@@ -8,36 +8,37 @@ import {connect} from 'react-redux';
 
 export const required = value => (value ? undefined : 'Required');
 
-class EditComment extends React.Component {
-    state = {};
-
-    componentDidMount() {
-        if (this.props.onMount) {
-            this.props.onMount(this.handleOpen);
-        }
-    }
+class EditCommentModal extends React.Component {
+    state = {modalOpen: false};
 
     handleOpen = () => {
+        const {postId, comment} = this.props;
+        this.props.dispatch(initialize('comment', {
+            parentId: postId,
+            ...comment
+        }));
         this.setState({modalOpen: true});
     };
 
+    handleClose = () => this.setState({modalOpen: false});
+
     handleSubmit = () => {
         this.props.handleSubmit();
-        this.handleClose();
-    };
-
-    handleClose = () => {
         this.props.reset();
-        this.props.onCancel();
         this.setState({modalOpen: false});
     };
 
+
     render() {
+        const {comment, component} = this.props;
         return (
-            <Modal open={this.state.modalOpen}>
+            <Modal trigger={component}
+                   onOpen={this.handleOpen}
+                   open={this.state.modalOpen}
+                   onClose={this.close}>
                 <Modal.Content>
                     <div>
-                        <Header>{this.props.edit ? 'Edit Comment' : 'Add Comment'}</Header>
+                        <Header>{comment ? 'Edit Comment' : 'Add Comment'}</Header>
                         <Form reply
                               onSubmit={this.handleSubmit}
                               name="comment">
@@ -60,7 +61,7 @@ class EditComment extends React.Component {
                                    validate={required}/>
 
                             <Button type='submit'
-                                    content={this.props.edit ? 'Update' : 'Add Comment'}
+                                    content={comment ? 'Update' : 'Add Comment'}
                                     labelPosition='left'
                                     icon='edit'
                                     primary/>
@@ -78,10 +79,8 @@ class EditComment extends React.Component {
 }
 
 
-EditComment.propTypes = {
+EditCommentModal.propTypes = {
     onSubmit: PropTypes.func,
-    onCancel: PropTypes.func,
-    onMount: PropTypes.func,
     postId: PropTypes.string,
     comment: PropTypes.object
 };
@@ -91,18 +90,17 @@ function mapStateToProps(state, {postId, comment}) {
         initialValues: {
             parentId: postId,
             ...comment
-        },
-        edit: !!comment
+        }
     }
 }
 
-EditComment = reduxForm({
+EditCommentModal = reduxForm({
     form: 'comment',
     enableReinitialize: true
-})(EditComment);
+})(EditCommentModal);
 
-EditComment = connect(
+EditCommentModal = connect(
     mapStateToProps
-)(EditComment);
+)(EditCommentModal);
 
-export default EditComment
+export default EditCommentModal
