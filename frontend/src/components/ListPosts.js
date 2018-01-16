@@ -20,10 +20,6 @@ class ListPosts extends React.Component {
         }
     }
 
-    postDeleted = (post) => {
-        console.log(post.category);
-    };
-
     handleSubmit = (post) => {
         this.props.addPost(post);
     };
@@ -77,7 +73,6 @@ class ListPosts extends React.Component {
                 <Feed>
                     {this.props.posts.map((post) => (
                         <Post key={post.id}
-                              onPostDelete={this.postDeleted}
                               post={post}/>
                     ))}
                 </Feed>

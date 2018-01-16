@@ -1,5 +1,5 @@
 import React from 'react';
-import {Header, Feed, Comment, Button, Divider} from 'semantic-ui-react'
+import {Header, Feed, Comment, Button, Divider, Menu, Container} from 'semantic-ui-react'
 import Post from './Post';
 import {fetchPost} from '../actions/post';
 import PropTypes from 'prop-types';
@@ -10,6 +10,10 @@ import PostComment from './PostComment';
 
 
 class PostDetails extends React.Component {
+    static contextTypes = {
+        router: PropTypes.object
+    };
+
     componentDidMount() {
         this.props.fetchPost(this.props.postId);
         this.props.fetchPostComments(this.props.postId);
@@ -19,38 +23,57 @@ class PostDetails extends React.Component {
         this.props.addComment(comment);
     };
 
+    handleBackButton() {
+        this.context.router.history.goBack();
+    }
+
+
+    postDeleted = () => {
+        this.context.router.history.goBack();
+    };
 
     render() {
         return (
             <div>
-                {this.props.post && (
-                    <div>
-                        <Feed>
-                            <Post post={this.props.post}/>
-                        </Feed>
-                        <Comment.Group>
-                            <Header as='h3' dividing>Comments</Header>
+                <Menu stackable borderless>
+                    <Container text>
+                        <Menu.Item header
+                                   onClick={() => this.handleBackButton()}>
+                            {'Back'}
+                        </Menu.Item>
+                    </Container>
+                </Menu>
+                <div>
+                    {this.props.post && (
+                        <div>
+                            <Feed>
+                                <Post post={this.props.post}
+                                      onPostDelete={this.postDeleted}/>
+                            </Feed>
+                            <Comment.Group>
+                                <Header as='h3' dividing>Comments</Header>
 
-                            {this.props.comments && this.props.comments.map((comment) => (
-                                <PostComment key={comment.id}
-                                             comment={comment}/>
-                            ))}
+                                {this.props.comments && this.props.comments.map((comment) => (
+                                    <PostComment key={comment.id}
+                                                 comment={comment}/>
+                                ))}
 
-                            <Divider section/>
+                                <Divider section/>
 
-                            {this.props.comments && (
-                                <EditCommentModal
-                                    component={(<Button content='Add Comment'
-                                                        labelPosition='left'
-                                                        icon='edit'
-                                                        primary/>)}
-                                    postId={this.props.post.id}
-                                    onSubmit={this.handleSubmit}
-                                />
-                            )}
-                        </Comment.Group>
-                    </div>
-                )}
+                                {this.props.comments && (
+                                    <EditCommentModal
+                                        component={(<Button content='Add Comment'
+                                                            labelPosition='left'
+                                                            icon='edit'
+                                                            primary/>)}
+                                        postId={this.props.post.id}
+                                        onSubmit={this.handleSubmit}
+                                    />
+                                )}
+                            </Comment.Group>
+                        </div>
+                    )}
+                </div>
             </div>
         )
     }
