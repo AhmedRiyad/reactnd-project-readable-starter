@@ -11,6 +11,7 @@ import PostDetails from './PostDetails';
 import Navigation from './Navigation';
 import {fetchCategories} from '../actions/category';
 import {connect} from 'react-redux';
+import NotFound from './NotFound';
 
 
 class App extends Component {
@@ -24,34 +25,26 @@ class App extends Component {
         return (
 
             <div>
-
-                {/*<Route path="/(.+)" render={(() =>*/}
-                {/*<Navigation/>*/}
-                {/*)}/>*/}
-                <Navigation/>
-
                 <Container text>
                     <Switch>
-                        {/*<Route*/}
-                        {/*exact path="/posts/new" render={() => (*/}
-                        {/*<EditPost/>*/}
-                        {/*)}*/}
-                        {/*/>*/}
+                        <Route exact path="/404" component={NotFound}/>
                         <Route
                             exact path="/:category?" render={(props) => (
-                            <ListPosts category={props.match.params.category}/>
+                            <div>
+                                <Navigation/>
+                                <ListPosts category={props.match.params.category}/>
+                            </div>
                         )}
                         />
                         <Route
                             exact path="/:category/:postId" render={(props) => (
-                            <PostDetails postId={props.match.params.postId}/>
+                            <div>
+                                <Navigation/>
+                                <PostDetails postId={props.match.params.postId}/>
+                            </div>
                         )}
                         />
-                        {/*<Route*/}
-                        {/*exact path="/:category/:postId/edit" render={() => (*/}
-                        {/*<EditPost/>*/}
-                        {/*)}*/}
-                        {/*/>*/}
+                        <Route path="*" component={NotFound}/>
                     </Switch>
                 </Container>
 

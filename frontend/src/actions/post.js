@@ -95,6 +95,7 @@ export function fetchCategoryPosts(category) {
 export function fetchPost(id) {
     return (dispatch) => {
         dispatch(postIsLoading(true));
+        dispatch(postHasError(false));
         fetch(`${api}/posts/${id}`, {headers})
             .then((response) => {
                 if (!response.ok) {
@@ -106,7 +107,7 @@ export function fetchPost(id) {
                 return response.json();
             })
             .then((posts) => dispatch(postFetchDataSuccess(posts)))
-            .catch(() => dispatch(postHasError(true)));
+            .catch((e) => dispatch(postHasError(true)));
     };
 }
 

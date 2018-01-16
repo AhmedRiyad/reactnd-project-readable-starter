@@ -110,6 +110,8 @@ class ListPosts extends React.Component {
                 <Feed>
                     {sortBy(this.props.posts
                         .filter((post) => {
+                            if (!post || !post.id) return false;
+
                             if (this.props.category) {
                                 return this.props.category === post.category;
                             }

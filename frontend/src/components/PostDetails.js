@@ -27,9 +27,15 @@ class PostDetails extends React.Component {
         this.context.router.history.goBack();
     }
 
+    componentWillReceiveProps(props) {
+        if (this.props.postHasError !== props.postHasError && props.postHasError) {
+            this.context.router.history.push('/404');
+        }
+    }
+
 
     postDeleted = () => {
-        this.context.router.history.goBack();
+        this.context.router.history.replace('/');
     };
 
     render() {
@@ -88,6 +94,7 @@ PostDetails.propTypes = {
 const mapStateToProps = ({posts, comments}, props) => {
     return {
         post: posts.items[props.postId],
+        postHasError: posts.postHasError,
         comments: Object.keys(comments.items).map((k) => comments.items[k])
     };
 };
