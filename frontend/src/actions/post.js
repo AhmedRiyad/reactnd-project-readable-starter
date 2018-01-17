@@ -106,8 +106,14 @@ export function fetchPost(id) {
 
                 return response.json();
             })
-            .then((posts) => dispatch(postFetchDataSuccess(posts)))
-            .catch((e) => dispatch(postHasError(true)));
+            .then((post) => {
+                if (post.id) {
+                    dispatch(postFetchDataSuccess(post));
+                } else {
+                    dispatch(postHasError(true));
+                }
+            })
+            .catch(() => dispatch(postHasError(true)));
     };
 }
 

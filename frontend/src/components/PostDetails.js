@@ -41,16 +41,16 @@ class PostDetails extends React.Component {
     render() {
         return (
             <div>
-                <Menu stackable borderless>
-                    <Container text>
-                        <Menu.Item header
-                                   onClick={() => this.handleBackButton()}>
-                            {'Back'}
-                        </Menu.Item>
-                    </Container>
-                </Menu>
-                <div>
-                    {this.props.post && (
+                {this.props.post && (
+                    <div>
+                        <Menu stackable borderless>
+                            <Container text>
+                                <Menu.Item header
+                                           onClick={() => this.handleBackButton()}>
+                                    {'Back'}
+                                </Menu.Item>
+                            </Container>
+                        </Menu>
                         <div>
                             <Feed>
                                 <Post post={this.props.post}
@@ -78,8 +78,8 @@ class PostDetails extends React.Component {
                                 )}
                             </Comment.Group>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         )
     }
